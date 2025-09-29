@@ -1,0 +1,1 @@
+start "" ".\Distribution\GroupDocs.Parser.GUI\net8.0-windows7\GroupDocs.Parser.GUI.exe"
