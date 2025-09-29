@@ -3,10 +3,10 @@
 [![Product Page](https://img.shields.io/badge/Product%20Page-2865E0?style=for-the-badge&logo=appveyor&logoColor=white)](https://products.groupdocs.com/parser/net/) 
 [![Docs](https://img.shields.io/badge/Docs-2865E0?style=for-the-badge&logo=Hugo&logoColor=white)](https://docs.groupdocs.com/parser/net/) 
 [![Demos](https://img.shields.io/badge/Demos-2865E0?style=for-the-badge&logo=appveyor&logoColor=white)](https://products.groupdocs.app/parser/total) 
-[![API Reference](https://img.shields.io/badge/API%20Reference-2865E0?style=for-the-badge&logo=html5&logoColor=white)](https://reference.groupdocs.com/parser/net/) 
+[![API](https://img.shields.io/badge/API%20Reference-2865E0?style=for-the-badge&logo=html5&logoColor=white)](https://reference.groupdocs.com/parser/net/) 
 [![Blog](https://img.shields.io/badge/Blog-2865E0?style=for-the-badge&logo=WordPress&logoColor=white)](https://blog.groupdocs.com/category/parser/) 
-[![Free Support](https://img.shields.io/badge/Free%20Support-2865E0?style=for-the-badge&logo=Discourse&logoColor=white)](https://forum.groupdocs.com/c/parser) 
-[![Temporary License](https://img.shields.io/badge/Temporary%20License-2865E0?style=for-the-badge&logo=rocket&logoColor=white)](https://purchase.groupdocs.com/temporary-license)
+[![Support](https://img.shields.io/badge/Free%20Support-2865E0?style=for-the-badge&logo=Discourse&logoColor=white)](https://forum.groupdocs.com/c/parser) 
+[![Temp License](https://img.shields.io/badge/Temporary%20License-2865E0?style=for-the-badge&logo=rocket&logoColor=white)](https://purchase.groupdocs.com/temporary-license)
 
 This repository provides a **WPF-based document parser and template editor** built on [GroupDocs.Parser for .NET](https://products.groupdocs.com/parser/net/).  
 It allows you to visually define parsing templates for documents and then apply them to extract structured data.
@@ -19,7 +19,7 @@ The solution includes project(s):
 
 - **GroupDocs.Parser.GUI** – Windows desktop GUI for creating and editing parsing templates.  
 
-![Parser GUI Demo](./images/app-demo-01.png)
+![Parser GUI Demo](Images/app-demo.png)
 
 ---
 
