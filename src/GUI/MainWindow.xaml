@@ -344,12 +344,14 @@
                                                 Width="auto"
                                                 DisplayMemberBinding="{Binding Path=TimeText, Mode=OneTime}" />
                                 <GridViewColumn Header="Message"
+                                                Width="auto"
                                                 DisplayMemberBinding="{Binding Path=Message, Mode=OneWay}" />
                                 <GridViewColumn Header="Button">
                                     <GridViewColumn.CellTemplate>
                                         <DataTemplate>
                                             <Button Margin="0"
                                                     MinHeight="16"
+                                                    Width="50"
                                                     Padding="0"
                                                     Content="Expand"
                                                     Style="{StaticResource {x:Static ToolBar.ButtonStyleKey}}"

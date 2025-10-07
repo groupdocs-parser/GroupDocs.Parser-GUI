@@ -10,8 +10,11 @@ using System.Globalization;
 using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
+using System.Windows;
 using System.Windows.Media.Imaging;
 using System.Xml.Linq;
+using Size = GroupDocs.Parser.Data.Size;
+using Point = GroupDocs.Parser.Data.Point;
 
 namespace GroupDocs.Parser.GUI.ViewModels
 {
@@ -184,34 +187,7 @@ namespace GroupDocs.Parser.GUI.ViewModels
             this.percentagePosition = percentagePosition;
         }
 
-        public void AddLogEntry(DateTime time, string message)
-        {
-            var item = new LogItemViewModel(time, message);
-            AddLogEntryPrivate(item);
-
-            SelectedLogItem = item;
-        }
-
-        public void AddLogEntry(string message)
-        {
-            AddLogEntry(DateTime.Now, message);
-        }
-
-        private void AddLogEntryPrivate(LogItemViewModel item)
-        {
-            Action action = () =>
-            {
-                while (Log.Count >= MaxLogItemCount)
-                {
-                    Log.RemoveAt(0);
-                }
-                // Clear is a quick fix due to automatic resize issue
-                //Log.Clear();
-
-                Log.Add(item);
-            };
-            CallOnUIThreadIfNeeded(action);
-        }
+        
 
         private async void Init()
         {
@@ -225,14 +201,16 @@ namespace GroupDocs.Parser.GUI.ViewModels
         private async Task<bool> SetLicense()
         {
             WindowEnabled = false;
+            var result = true;
             try
             {
                 var licensePath = Settings.LicensePath;
-                if (!string.IsNullOrWhiteSpace(licensePath))
+                result = !string.IsNullOrWhiteSpace(licensePath);
+                if (result)
                 {
                     AddLogEntry("Setting a license: " + licensePath);
-
-                    if (File.Exists(licensePath))
+                    result = File.Exists(licensePath);
+                    if (result)
                     {
                         await Task.Factory.StartNew(() =>
                         {
@@ -246,15 +224,18 @@ namespace GroupDocs.Parser.GUI.ViewModels
                     {
                         AddLogEntry("The license file doesn't exist.");
                     }
-
-                    return true;
                 }
-                return false;
+            }
+            catch(Exception ex)
+            {
+                result = false;
+                OnError(ex, "Setting License Error");
             }
             finally
             {
                 WindowEnabled = true;
             }
+            return result;
         }
 
         private async void OnSetLicense()
@@ -271,14 +252,21 @@ namespace GroupDocs.Parser.GUI.ViewModels
 
         private void OnOpenFile()
         {
-            var dialog = new OpenFileDialog();
-            dialog.Title = "Select a document";
-            if (dialog.ShowDialog() == true)
+            try
             {
-                FilePath = dialog.FileName;
-                AddLogEntry("Opened a file: " + FilePath);
-                DetectOCR();
-                GeneratePreview();
+                var dialog = new OpenFileDialog();
+                dialog.Title = "Select a document";
+                if (dialog.ShowDialog() == true)
+                {
+                    FilePath = dialog.FileName;
+                    AddLogEntry("Opened a file: " + FilePath);
+                    DetectOCR();
+                    GeneratePreview();
+                }
+            }
+            catch (Exception ex)
+            {
+                OnError(ex, "Opening File Error");
             }
         }
 
@@ -441,6 +429,11 @@ namespace GroupDocs.Parser.GUI.ViewModels
                 await task;
                 AddLogEntry("Parsing by template is completed.");
             }
+            catch (Exception ex)
+            {
+                OnError(ex, "Parsing Fields Error");
+            }
+
             finally
             {
                 WindowEnabled = true;
@@ -621,6 +614,10 @@ namespace GroupDocs.Parser.GUI.ViewModels
                 await task;
                 AddLogEntry("Parsing the document is completed.");
             }
+            catch (Exception ex)
+            {
+                OnError(ex, "On Parsing Document");
+            }
             finally
             {
                 WindowEnabled = true;
@@ -730,6 +727,10 @@ namespace GroupDocs.Parser.GUI.ViewModels
                 });
                 await task;
                 AddLogEntry("Generating template is completed.");
+            }
+            catch (Exception ex)
+            {
+                OnError(ex, "Generating Template Async");
             }
             finally
             {
@@ -921,5 +922,44 @@ namespace GroupDocs.Parser.GUI.ViewModels
             }
             fields.Remove(field);
         }
+
+
+        #region Working with logging
+        public void AddLogEntry(DateTime time, string message)
+        {
+            var item = new LogItemViewModel(time, message);
+            AddLogEntryPrivate(item);
+            SelectedLogItem = item;
+        }
+
+        public void AddLogEntry(string message)
+        {
+            AddLogEntry(DateTime.Now, message);
+        }
+
+        private void AddLogEntryPrivate(LogItemViewModel item)
+        {
+            Action action = () =>
+            {
+                while (Log.Count >= MaxLogItemCount)
+                {
+                    Log.RemoveAt(0);
+                }
+                // Clear is a quick fix due to automatic resize issue
+                //Log.Clear();
+
+                Log.Add(item);
+            };
+            CallOnUIThreadIfNeeded(action);
+        }
+
+        private void OnError(Exception ex, string message)
+        {
+            var line = ex.InnerException != null ? $"{ex.Message}({ex.InnerException.Message})" : ex.Message;
+            line = $"{message} : {line}";
+            AddLogEntry(line);
+            MessageBox.Show(line, "Error", MessageBoxButton.OK);
+        }
+        #endregion
     }
 }
