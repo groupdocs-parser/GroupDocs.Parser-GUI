@@ -22,7 +22,7 @@ namespace GroupDocs.Parser.GUI.ViewModels
     {
         private const int MaxLogItemCount = 1000;
         private const int PreviewDpi = 144;
-        private static int[] ocrDpis = new int[] { 288, 500 };
+        private readonly static int[] ocrDpis = new int[] { 72, 144, 216, 288, 360, 432, 504 };
 
         private int fieldCounter;
 
@@ -31,7 +31,7 @@ namespace GroupDocs.Parser.GUI.ViewModels
         private LogItemViewModel selectedLogItem;
         private double percentagePosition;
         private bool isOcrUsed;
-        private int ocrDpi = ocrDpis[0];
+        private int ocrDpi = 288;
         private readonly BoolWrapper genVisibility = new BoolWrapper(false);
 
         private readonly Settings settings;
@@ -58,8 +58,10 @@ namespace GroupDocs.Parser.GUI.ViewModels
         public RelayCommand LoadTemplatesCommand { get; private set; }
         public RelayCommand SaveResultsCommand { get; private set; }
         public RelayCommand ExportTemplatesCommand { get; private set; }
-        public RelayCommand ChangeOcrDpiCommand { get; private set; }
+        public RelayCommand IncreaseDpiCommand { get; private set; }
+        public RelayCommand DecreaseDpiCommand { get; private set; }
         public RelayCommand GenerateTemplateCommand { get; private set; }
+        public RelayCommand DeleteCommand { get; private set; }
 
         public MainViewModel(Settings settings)
         {
@@ -80,8 +82,10 @@ namespace GroupDocs.Parser.GUI.ViewModels
             LoadTemplatesCommand = new RelayCommand(OnLoadTemplates);
             SaveResultsCommand = new RelayCommand(OnSaveResults);
             ExportTemplatesCommand = new RelayCommand(OnExportTemplates);
-            ChangeOcrDpiCommand = new RelayCommand(OnChangeOcrDpi);
+            IncreaseDpiCommand = new RelayCommand(OnIncreaseDpi);
+            DecreaseDpiCommand = new RelayCommand(OnDecreaseDpi);
             GenerateTemplateCommand = new RelayCommand(OnGenerateTemplateAsync);
+            DeleteCommand = new RelayCommand(OnDelete);
 
             Init();
         }
@@ -187,7 +191,21 @@ namespace GroupDocs.Parser.GUI.ViewModels
             this.percentagePosition = percentagePosition;
         }
 
-        
+        public void MouseWheelCustom(int delta)
+        {
+            if (System.Windows.Input.Keyboard.IsKeyDown(System.Windows.Input.Key.LeftCtrl) ||
+                System.Windows.Input.Keyboard.IsKeyDown(System.Windows.Input.Key.RightCtrl))
+            {
+                if (delta < 0)
+                {
+                    OnZoomOut();
+                }
+                else
+                {
+                    OnZoomIn();
+                }
+            }
+        }
 
         private async void Init()
         {
@@ -687,11 +705,24 @@ namespace GroupDocs.Parser.GUI.ViewModels
             }
         }
 
-        private void OnChangeOcrDpi()
+        private void OnIncreaseDpi()
         {
             int index = Array.IndexOf(ocrDpis, OcrDpi);
-            int newIndex = (index + 1) % ocrDpis.Length;
-            OcrDpi = ocrDpis[newIndex];
+            int newIndex = index + 1;
+            if (newIndex < ocrDpis.Length)
+            {
+                OcrDpi = ocrDpis[newIndex];
+            }
+        }
+
+        private void OnDecreaseDpi()
+        {
+            int index = Array.IndexOf(ocrDpis, OcrDpi);
+            if (index > 0)
+            {
+                int newIndex = index - 1;
+                OcrDpi = ocrDpis[newIndex];
+            }
         }
 
         private async void OnGenerateTemplateAsync()
@@ -735,6 +766,15 @@ namespace GroupDocs.Parser.GUI.ViewModels
             finally
             {
                 WindowEnabled = true;
+            }
+        }
+
+        private void OnDelete()
+        {
+            var selected = SelectedField;
+            if (selected != null)
+            {
+                Remove(selected);
             }
         }
 

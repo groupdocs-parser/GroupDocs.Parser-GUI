@@ -204,7 +204,7 @@ namespace GroupDocs.Parser.GUI.Utils
 		/// </summary>
 		public class ListViewResizeBehavior
 		{
-			private const int Margin = 10;
+			private const int Margin = 30;
 			private const long RefreshTime = Timeout.Infinite;
 			private const long Delay = 500;
 

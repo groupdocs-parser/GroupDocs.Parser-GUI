@@ -27,9 +27,15 @@ public partial class App : Application
 
         mainWindow = new MainWindow();
         mainWindow.PercentagePositionChanged += OnPercentagePositionChanged;
+        mainWindow.MouseWheelCustom += OnMouseWheelCustom;
         mainWindow.DataContext = mainViewModel;
         App.Current.MainWindow = mainWindow;
         mainWindow.Show();
+    }
+
+    private void OnMouseWheelCustom(object sender, System.Windows.Input.MouseWheelEventArgs e)
+    {
+        mainViewModel.MouseWheelCustom(e.Delta);
     }
 
     private void OnPercentagePositionChanged(object sender, Controls.PercentagePositionEventArgs e)

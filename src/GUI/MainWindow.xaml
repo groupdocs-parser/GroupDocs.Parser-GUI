@@ -49,6 +49,12 @@
         </ResourceDictionary>
     </Window.Resources>
 
+    <Window.InputBindings>
+        <KeyBinding
+            Command="{Binding DeleteCommand}"
+            Gesture="Del" />
+    </Window.InputBindings>
+
     <Grid>
         <Grid>
             <Grid.RowDefinitions>
@@ -128,10 +134,26 @@
                         ToolTip="Applicable if the document consists of images"
                         IsChecked="{Binding IsOcrUsed}" />
                     <Button
-                        Content="{Binding OcrDpi}"
-                        MinWidth="50"
-                        Command="{Binding ChangeOcrDpiCommand}"
-                        ToolTip="DPI used for OCR operations" />
+                    Style="{StaticResource SquareButtonStyle}"
+                        Content="+"
+                        FontSize="24"
+                        Command="{Binding IncreaseDpiCommand}" />
+                    <Label
+                        HorizontalContentAlignment="Center"
+                        MinWidth="80"
+                        Style="{StaticResource ToolboxLabel}"
+                        VerticalAlignment="Center"
+                        ToolTip="DPI used for OCR operations. A higher value gives better quality but lower performance.">
+                        <TextBlock>
+                            <Run Text="{Binding OcrDpi, Mode=OneWay}" />
+                            <Run Text="DPI" />
+                        </TextBlock>
+                    </Label>
+                    <Button
+                        Style="{StaticResource SquareButtonStyle}"
+                        Content="−"
+                        FontSize="24"
+                        Command="{Binding DecreaseDpiCommand}" />
                     <Button
                         Content="Parse Fields"
                         Command="{Binding ParseFieldsCommand}" />
@@ -168,6 +190,7 @@
                     BorderThickness="0,1,1,1">
                     <ctrl:CustomScrollViewer
                         PercentagePositionChanged="CustomScrollViewer_PercentagePositionChanged"
+                        PreviewMouseWheel="CustomScrollViewer_MouseWheel"
                         HorizontalAlignment="Stretch"
                         HorizontalScrollBarVisibility="Auto"
                         VerticalScrollBarVisibility="Visible"
@@ -344,6 +367,7 @@
                                                 Width="auto"
                                                 DisplayMemberBinding="{Binding Path=TimeText, Mode=OneTime}" />
                                 <GridViewColumn Header="Message"
+                                                utils:GridViewColumnResize.Width="*"
                                                 Width="auto"
                                                 DisplayMemberBinding="{Binding Path=Message, Mode=OneWay}" />
                                 <GridViewColumn Header="Button">
